@@ -2,7 +2,7 @@
 
 import sys
 
-from PySide6.QtCore import QTimer
+from PySide6.QtCore import QTimer, QTranslator, QLocale, QLibraryInfo
 from PySide6.QtWidgets import QApplication, QMessageBox
 
 from interfaz.ventana import VentanaPrincipal
@@ -29,9 +29,17 @@ def iniciar_agenda():
 
 def main():
     app = QApplication(sys.argv)
+    # Botones estándar de Qt en español ("Sí", "No", "Aceptar"...)
+    traductor = QTranslator(app)
+
+    if traductor.load(QLocale("es"), "qtbase", "_", QLibraryInfo.path(QLibraryInfo.TranslationsPath)):
+        app.installTranslator(traductor)
+
     agenda = iniciar_agenda()
+
     if agenda is None:
         sys.exit(1)
+        
     ventana = VentanaPrincipal(agenda, tema="Bytes")
     ventana.show()
     QTimer.singleShot(300, ventana.avisos_iniciales)   # avisos con la ventana ya visible

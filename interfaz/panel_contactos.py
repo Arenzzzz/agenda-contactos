@@ -68,9 +68,9 @@ class PanelContactos(QWidget):
         self.tabla.setShowGrid(False)
         self.tabla.setSortingEnabled(True)                             # clic en encabezado = ordenar
         self.tabla.horizontalHeader().setSortIndicator(0, Qt.AscendingOrder)
-        for col in range(len(COLUMNAS)):
-            modo = QHeaderView.Stretch if col in (3, 5) else QHeaderView.ResizeToContents
-            self.tabla.horizontalHeader().setSectionResizeMode(col, modo)
+        cabecera = self.tabla.horizontalHeader()
+        cabecera.setSectionResizeMode(QHeaderView.ResizeToContents)   # cada columna mide lo que su texto
+        cabecera.setStretchLastSection(True)                          # la última ocupa el sobrante
         self.tabla.itemSelectionChanged.connect(self._fila_elegida)
 
         marco = QFrame(objectName="tarjeta")
