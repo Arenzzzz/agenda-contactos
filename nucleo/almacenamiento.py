@@ -15,8 +15,11 @@ class ArchivoContactos:
         """ Crea la carpeta y el archivo vacío si todavía no existen """
 
         self.ruta.parent.mkdir(parents=True, exist_ok=True)
+        self.creado = False
+        
         if not self.ruta.exists():
-            self.ruta.touch()   # Crea el archivo vacío
+            self.ruta.touch()
+            self.creado = True                   # no existía: se creó vacío
 
     def cantidad_registros(self) -> int:
         """ Tamaño del archivo / tamaño del registro = número de registros """

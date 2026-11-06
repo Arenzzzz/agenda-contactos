@@ -11,8 +11,10 @@ class Agenda:
 
     def __init__(self):
         self.archivo = ArchivoContactos()
-        # 1. Integridad primero: ¿alguien tocó el archivo fuera de la app?
-        self.integridad = verificar()   # (estado, guardado, actual)
+        self.archivo_creado = self.archivo.creado
+        if self.archivo_creado:
+            guardar_hash()                         # archivo nuevo: su huella empieza aquí
+        self.integridad = verificar()
 
         if self.integridad[0] == "sin_hash":
             guardar_hash()  # primera vez: crear la huella

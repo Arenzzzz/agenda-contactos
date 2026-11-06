@@ -272,7 +272,11 @@ class VentanaPrincipal(QMainWindow):
         # ================= Integridad =================
     def avisos_iniciales(self):
         """Se llama justo después de abrir la ventana."""
-        if self.agenda.indice_reconstruido:
+        if self.agenda.archivo_creado:
+            QMessageBox.warning(self, "Archivo no encontrado",
+                                "contactos.dat no existía, así que se creó uno vacío.\n\n"
+                                "Si tenías contactos guardados, restaura un respaldo ZIP.")
+        elif self.agenda.indice_reconstruido:
             QMessageBox.information(self, "Índice reconstruido",
                                     "indice.json no existía o estaba dañado.\n"
                                     "Se reconstruyó leyendo contactos.dat de forma secuencial.")
