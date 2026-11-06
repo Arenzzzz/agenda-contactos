@@ -19,6 +19,7 @@ from PySide6.QtGui import QDesktopServices
 
 from herramientas.exportar import exportar_json, exportar_pdf
 from herramientas.respaldo import crear_respaldo
+from herramientas.info_archivo import informacion
 
 class VentanaPrincipal(QMainWindow):
     """ Es el único componente que habla con la Agenda (los archivos) """
@@ -40,7 +41,7 @@ class VentanaPrincipal(QMainWindow):
             "Herramientas": [("📄   Exportar JSON", self.accion_exportar_json),
                              ("🧾   Exportar PDF", self.accion_exportar_pdf),
                              ("🗜️   Respaldo ZIP", self.accion_respaldo),
-                             ("ℹ️   Info del archivo", self.pendiente),
+                             ("ℹ️   Info del archivo", self.accion_info_archivo),
                              ("🛡️   Verificar integridad", self.verificar_integridad)],
         })
         self.panel = PanelContactos()
@@ -87,7 +88,7 @@ class VentanaPrincipal(QMainWindow):
 
         herramientas = menu.addMenu("&Herramientas")
         self._accion(herramientas, "Verificar integridad (SHA-256)", self.verificar_integridad)
-        self._accion(herramientas, "Información del archivo", self.pendiente)
+        self._accion(herramientas, "Información del archivo", self.accion_info_archivo)
 
         ver = menu.addMenu("&Ver")
         grupo = QActionGroup(self)               # solo un tema marcado a la vez
@@ -243,6 +244,31 @@ class VentanaPrincipal(QMainWindow):
             "</table><br>"
             f"Ahorro: <b>{r['ahorro']:.1f}%</b><br>{estado}")
 
+    def accion_info_archivo(self):
+        try:
+            i = informacion()
+        except OSError as e:
+            QMessageBox.critical(self, "No se pudo leer la información", str(e))
+            return
+
+        si_no = lambda valor: "✔ Sí" if valor else "✖ No"
+        estructura = ("Correcta (múltiplo exacto de 128)" if i["sobrante"] == 0
+                      else f"⚠ Sobran {i['sobrante']} bytes: archivo dañado")
+        filas = [
+            ("Ruta", i["ruta"]),
+            ("Tamaño", f"{i['tamano']:,} bytes"),
+            ("Registros", f"{i['registros']} × {TAM_REGISTRO} bytes"),
+            ("Estructura", estructura),
+            ("Modificado", i["modificado"]),
+            ("Último acceso", i["accedido"]),
+            ("Permisos", f"{i['permisos']}   ({i['octal']})"),
+            ("Lectura", si_no(i["lectura"])),
+            ("Escritura", si_no(i["escritura"])),
+        ]
+        tabla = "".join(f"<tr><td><b>{k}</b></td><td>{v}</td></tr>" for k, v in filas)
+        QMessageBox.information(self, f"Información de {i['nombre']}",
+                                f"<table cellpadding='4'>{tabla}</table>")
+
         # ================= Integridad =================
     def avisos_iniciales(self):
         """Se llama justo después de abrir la ventana."""
@@ -290,6 +316,3 @@ class VentanaPrincipal(QMainWindow):
                           f"Registros de tamaño fijo ({TAM_REGISTRO} bytes), acceso aleatorio "
                           "con seek()/tell(), índice primario JSON e integridad SHA-256.<br><br>"
                           "Manejo e Implementación de Archivos · URL")
-
-    def pendiente(self):
-        QMessageBox.information(self, "Próximamente", "Esta herramienta la agregamos después.")
