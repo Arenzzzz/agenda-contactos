@@ -4,13 +4,13 @@ import zipfile
 from datetime import datetime
 from pathlib import Path
 
-from nucleo.config import ARCHIVO_CONTACTOS, ARCHIVO_INDICE, RESPALDO_DIR
+from nucleo.config import ARCHIVO_CONTACTOS, ARCHIVO_INDICE, ARCHIVO_HASH, RESPALDO_DIR
 
 
 def crear_respaldo(destino: Path = RESPALDO_DIR) -> dict:
     """ Crea respaldo_AAAAMMDD_HHMMSS.zip y devuelve los tamaños para compararlos """
     
-    archivos = [ARCHIVO_CONTACTOS, ARCHIVO_INDICE]
+    archivos = [ARCHIVO_CONTACTOS, ARCHIVO_INDICE, ARCHIVO_HASH]
     faltan = [a.name for a in archivos if not a.exists()]
     if faltan:
         raise FileNotFoundError(f"No se encontró: {', '.join(faltan)}")
