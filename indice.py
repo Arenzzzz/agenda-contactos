@@ -59,7 +59,7 @@ class Indice:
 
     def reconstruir(self, archivo):
         """ Recorre contactos.dat de forma secuencial y vuelve a armar el índice.
-        Se usa si el indice.json no existe, está corrupto o no coincide con el archivo """
+            Se usa si el indice.json no existe, está corrupto o no coincide con el archivo """
 
         self.mapa = {}
 

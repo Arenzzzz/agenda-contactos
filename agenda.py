@@ -3,6 +3,7 @@
 from almacenamiento import ArchivoContactos
 from indice import Indice
 from registro import Contacto, RegistroError
+from integridad import verificar, guardar_hash
 
 
 class Agenda:
@@ -10,7 +11,14 @@ class Agenda:
 
     def __init__(self):
         self.archivo = ArchivoContactos()
-        self.indice = Indice()                     # intenta cargar indice.json
+        # 1. Integridad primero: ¿alguien tocó el archivo fuera de la app?
+        self.integridad = verificar()   # (estado, guardado, actual)
+
+        if self.integridad[0] == "sin_hash":
+            guardar_hash()  # primera vez: crear la huella
+
+        # 2. Luego el índice
+        self.indice = Indice()
         self.indice_reconstruido = False
         self._verificar_indice()
 
@@ -29,6 +37,8 @@ class Agenda:
 
         n = self.archivo.agregar(contacto)      # 1. Escribir al final del .dat
         self.indice.agregar(contacto.id, n)     # 2. Registrar id -> n en el índice 
+
+        guardar_hash()  # actualizar la huella
 
         return n
 
@@ -54,10 +64,16 @@ class Agenda:
 
         self.archivo.sobrescribir(n, nuevos)    # seek() + write de 128 bytes
 
+        guardar_hash()  # actualizar la huella
+
         return n
 
     def listar(self) -> list[Contacto]:
         """ Todos los contactos, en orden de registro (lectura secuencial) """
 
         return [c for _, c in self.archivo.leer_todos()]
-    
+
+    def aceptar_estado_actual(self):
+        """ El usuario acepta el archivo como está: se guarda la huella nueva """
+        self.integridad = ("ok", *verificar()[1:])
+        guardar_hash()
