@@ -11,19 +11,24 @@ class Indice:
         self.mapa = {}  # ejemplo: {101: 0, 102: 1, 103:2}
         self.cargar()
 
-    def cargar(self):
-        """ Lee indice.json. Si no existe, empieza vacío """
+    def cargar(self) -> bool:
+        """ Lee indice.json. Devuelve False si no existe o está dañado """
+
+        self.mapa = {}
 
         if not self.ruta.exists():
+            return False
+        
+        try:
+            with open(self.ruta, "r", encoding=ENCODING) as f:
+                datos = json.load(f)
+            self.mapa = {int(k): int(v) for k, v in datos.items()}
+            return True
+        
+        except (json.JSONDecodeError, ValueError, AttributeError):
+            # Contenido inválido: lo dejamos vacío para reconstruirlo
             self.mapa = {}
-
-            return
-
-        with open(self.ruta, "r", encoding=ENCODING) as f:
-            datos = json.load(f)
-
-        # JSON guarda las claves como texto: "101" -> 101
-        self.mapa = {int(k): v for k, v in datos.items()}
+            return False
 
     def guardar(self):
         """ Escribe el índice en indice.json de forma segura """
