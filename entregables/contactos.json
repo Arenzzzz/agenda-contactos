@@ -1,0 +1,64 @@
+{
+    "generado": "2026-11-06T16:22:40",
+    "origen": "contactos.dat",
+    "tam_registro": 128,
+    "total": 8,
+    "contactos": [
+        {
+            "id": 101,
+            "nombre": "Ana López",
+            "telefono": "5555-1111",
+            "correo": "ana@mail.com",
+            "ciudad": "Quetzaltenango"
+        },
+        {
+            "id": 102,
+            "nombre": "Carlos Pérez",
+            "telefono": "5555-0000",
+            "correo": "carlos@url.edu.gt",
+            "ciudad": "Totonicapán"
+        },
+        {
+            "id": 103,
+            "nombre": "María Díaz",
+            "telefono": "5555-4444",
+            "correo": "maria@mail.com",
+            "ciudad": "San Marcos"
+        },
+        {
+            "id": 104,
+            "nombre": "Luis Gómez",
+            "telefono": "5555-4444",
+            "correo": "luis@mail.com",
+            "ciudad": "Huehuetenango"
+        },
+        {
+            "id": 105,
+            "nombre": "Sofía Ramírez",
+            "telefono": "5555-5555",
+            "correo": "sofia@mail.com",
+            "ciudad": "Retalhuleu"
+        },
+        {
+            "id": 1556425,
+            "nombre": "Arenz Peláez",
+            "telefono": "4649-9913",
+            "correo": "arenzpel@mail.com",
+            "ciudad": "Quetzaltenango"
+        },
+        {
+            "id": 111,
+            "nombre": "Luis Pérez",
+            "telefono": "1234-4321",
+            "correo": "luis@url.edu.gt",
+            "ciudad": "Suchitepéquez"
+        },
+        {
+            "id": 112,
+            "nombre": "Andrés Muñoz",
+            "telefono": "5512-3344",
+            "correo": "andres.munoz@mail.com",
+            "ciudad": "Quetzaltenango"
+        }
+    ]
+}
