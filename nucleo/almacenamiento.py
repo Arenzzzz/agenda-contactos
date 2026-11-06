@@ -8,7 +8,7 @@ class ArchivoContactos:
 
     def __init__(self, ruta=ARCHIVO_CONTACTOS):
         self.ruta = ruta
-        self.utlima_posicion = 0    # último valor de tell();
+        self.ultima_posicion = 0    # último valor de tell();
         self._asegurar_archivo()
 
     def _asegurar_archivo(self):
