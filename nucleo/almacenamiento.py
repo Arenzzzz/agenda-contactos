@@ -29,7 +29,7 @@ class ArchivoContactos:
         # Si no es múltiplo de 128, hay un registro incompleto: archivo dañado
         if tamanio % TAM_REGISTRO != 0:
             raise RegistroError(
-                f">> El archivo mide {tamanio} bytes, que no es múltiplo de {TAM_REGISTRO}"
+                f"El archivo mide {tamanio} bytes, que no es múltiplo de {TAM_REGISTRO}"
             )
 
         return tamanio // TAM_REGISTRO
@@ -56,7 +56,7 @@ class ArchivoContactos:
         """ Lee SOLO el registro n, sin recorrer los anteriores """
 
         if n < 0 or n >= self.cantidad_registros():
-            raise IndexError(f">> El registro {n} no existe.")
+            raise IndexError(f"El registro {n} no existe.")
 
         with open(self.ruta, "rb") as f:
             f.seek(self.posicion(n))            # saltar directo al registro
@@ -69,7 +69,7 @@ class ArchivoContactos:
         """ Modificación en el lugar: reemplaza solo los 128 bytes del registro n """
 
         if n < 0 or n >= self.cantidad_registros():
-            raise IndexError(f">> El registro {n} no existe.")
+            raise IndexError(f"El registro {n} no existe.")
 
         registro = empaquetar(contacto)     # validar y convertir a bytes
 

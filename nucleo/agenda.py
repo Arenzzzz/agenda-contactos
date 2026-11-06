@@ -35,7 +35,7 @@ class Agenda:
         """ Agrega un contacto nuevo. Devuelve su número de registro """
 
         if self.indice.existe(contacto.id):
-            raise RegistroError(f">> Ya existe un contacto con el ID {contacto.id}")
+            raise RegistroError(f"Ya existe un contacto con el ID {contacto.id}")
 
         n = self.archivo.agregar(contacto)      # 1. Escribir al final del .dat
         self.indice.agregar(contacto.id, n)     # 2. Registrar id -> n en el índice 
@@ -50,7 +50,7 @@ class Agenda:
         n = self.indice.buscar(id_contacto)     # 1. Consultar el índice
 
         if n is None:
-            raise KeyError(f">> No existe un contacto con el ID {id_contacto}")
+            raise KeyError(f"No existe un contacto con el ID {id_contacto}")
 
         contacto = self.archivo.leer(n)         # 2. Acceso directo con seek()
 
@@ -62,7 +62,7 @@ class Agenda:
         n, _ = self.buscar(id_contacto)         # índice -> registro (o KeyError)
 
         if nuevos.id != id_contacto:
-            raise RegistroError(">> No se puede cambiar el ID de un contacto")
+            raise RegistroError("No se puede cambiar el ID de un contacto")
 
         self.archivo.sobrescribir(n, nuevos)    # seek() + write de 128 bytes
 

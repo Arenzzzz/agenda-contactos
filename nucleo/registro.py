@@ -27,9 +27,9 @@ def validar(c: Contacto) -> None:
 
     # Revisa que los datos tengan sentido antes de guardarlos
     if not isinstance(c.id, int) or c.id <= 0:
-        raise RegistroError(">> El ID debe ser un número entero positivo.")
+        raise RegistroError("El ID debe ser un número entero positivo.")
     if not c.nombre.strip():
-        raise RegistroError(">> El nombre es obligatorio.")
+        raise RegistroError("El nombre es obligatorio.")
     
     correo = c.correo.strip()
     if correo and not PATRON_CORREO.match(correo):
@@ -45,7 +45,7 @@ def _campo_a_bytes(nombre: str, valor, largo: int) -> bytes: # - FUNCIÓN AUXILI
 
     if len(datos) > largo:  # medimos en BYTES, no en letras
         raise RegistroError(
-            f">> El campo '{nombre}' ocupa {len(datos)} bytes y el máximo es {largo}."
+            f"El campo '{nombre}' ocupa {len(datos)} bytes y el máximo es {largo}."
         )
 
     return datos.ljust(largo, b" ")
@@ -68,7 +68,7 @@ def desempaquetar(datos: bytes) -> Contacto:
 
     # 1. ¿El registro está completo?
     if len(datos) != TAM_REGISTRO or not datos.endswith(FIN_REGISTRO):
-        raise RegistroError(">> Registro incompleto o corrupto.")
+        raise RegistroError("Registro incompleto o corrupto.")
 
     valores, pos = {}, 0
     try:
@@ -83,6 +83,6 @@ def desempaquetar(datos: bytes) -> Contacto:
         valores['id'] = int(valores["id"])
 
     except (UnicodeDecodeError, ValueError) as e:
-        raise RegistroError(f">> Registro corrupto: {e}") from e
+        raise RegistroError(f"Registro corrupto: {e}") from e
 
     return Contacto(**valores)

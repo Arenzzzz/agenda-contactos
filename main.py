@@ -17,13 +17,13 @@ def iniciar_agenda():
         return Agenda()
     except RegistroError as e:
         QMessageBox.critical(None, "Archivo corrupto",
-                             f">> No se puede abrir contactos.dat:\n\n{e}\n\n"
+                             f"No se puede abrir contactos.dat:\n\n{e}\n\n"
                              "Restaura un respaldo ZIP para continuar.")
     except PermissionError:
         QMessageBox.critical(None, "Sin permisos",
-                             ">> No hay permisos para leer o escribir los archivos de datos.")
+                             "No hay permisos para leer o escribir los archivos de datos.")
     except OSError as e:
-        QMessageBox.critical(None, "Error de archivo", f">> No se pudo acceder a los datos:\n\n{e}")
+        QMessageBox.critical(None, "Error de archivo", f"No se pudo acceder a los datos:\n\n{e}")
     return None
 
 
