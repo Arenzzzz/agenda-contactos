@@ -1,7 +1,7 @@
 """ Índice primario: relaciona cada ID con su número de registro en contactos.dat """
 
 import json
-from config import ARCHIVO_INDICE, ENCODING
+from nucleo.config import ARCHIVO_INDICE, ENCODING
 
 class Indice:
     """ Diccionario {id: número de registro} guardado en índice.json """

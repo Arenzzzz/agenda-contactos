@@ -1,7 +1,7 @@
 import os
 
-from config import ARCHIVO_CONTACTOS, TAM_REGISTRO
-from registro import Contacto, empaquetar, desempaquetar, RegistroError
+from nucleo.config import ARCHIVO_CONTACTOS, TAM_REGISTRO
+from nucleo.registro import Contacto, empaquetar, desempaquetar, RegistroError
 
 class ArchivoContactos:
     """ Maneja el archivo de registros de tamaño fijo """

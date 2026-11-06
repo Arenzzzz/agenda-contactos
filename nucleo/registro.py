@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-from config import CAMPOS, TAM_REGISTRO, FIN_REGISTRO, ENCODING
+from nucleo.config import CAMPOS, TAM_REGISTRO, FIN_REGISTRO, ENCODING
 
 class RegistroError(ValueError):
     """ Error de validación o registro corrupto """

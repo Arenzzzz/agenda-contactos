@@ -2,7 +2,7 @@
 
 import hashlib
 
-from config import ARCHIVO_CONTACTOS, ARCHIVO_HASH, ENCODING
+from nucleo.config import ARCHIVO_CONTACTOS, ARCHIVO_HASH, ENCODING
 
 def calcular_hash(ruta=ARCHIVO_CONTACTOS) -> str:
     """ Calcula el SHA-256 del archivo leyéndolo por bloques """

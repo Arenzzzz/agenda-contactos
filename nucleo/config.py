@@ -1,7 +1,6 @@
 from pathlib import Path
 
-# Carpeta donde está este archivo (raíz del proyecto)
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent   # nucleo/ -> raíz del proyecto
 
 # Carpetas que la app usará
 DATA_DIR = BASE_DIR / "datos"               # contactos.dat, indice.json, hash

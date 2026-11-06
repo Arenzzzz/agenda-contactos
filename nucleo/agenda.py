@@ -1,9 +1,9 @@
 """ Agenda: coordina el archivo de contactos y el índice primario """
 
-from almacenamiento import ArchivoContactos
-from indice import Indice
-from registro import Contacto, RegistroError
-from integridad import verificar, guardar_hash
+from nucleo.almacenamiento import ArchivoContactos
+from nucleo.indice import Indice
+from nucleo.registro import Contacto, RegistroError
+from nucleo.integridad import verificar, guardar_hash
 
 
 class Agenda:
