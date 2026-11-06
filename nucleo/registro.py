@@ -1,6 +1,13 @@
 from dataclasses import dataclass, asdict
 from nucleo.config import CAMPOS, TAM_REGISTRO, FIN_REGISTRO, ENCODING
 
+import re
+
+# usuario@dominio.ext  (sin espacios, una sola @, al menos un punto después)
+PATRON_CORREO = re.compile(r"^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$")
+# dígitos, espacios, guiones y un + opcional al inicio; entre 8 y 15 caracteres
+PATRON_TELEFONO = re.compile(r"^\+?[\d\s-]{8,15}$")
+
 class RegistroError(ValueError):
     """ Error de validación o registro corrupto """
 
@@ -23,8 +30,13 @@ def validar(c: Contacto) -> None:
         raise RegistroError(">> El ID debe ser un número entero positivo.")
     if not c.nombre.strip():
         raise RegistroError(">> El nombre es obligatorio.")
-    if c.correo.strip() and "@" not in c.correo:
-        raise RegistroError(">> El correo no es válido.")
+    
+    correo = c.correo.strip()
+    if correo and not PATRON_CORREO.match(correo):
+        raise RegistroError("El correo no es válido (ejemplo: nombre@dominio.com).")
+    telefono = c.telefono.strip()
+    if telefono and not PATRON_TELEFONO.match(telefono):
+        raise RegistroError("El teléfono solo admite dígitos, espacios y guiones (8 a 15).")
 
 def _campo_a_bytes(nombre: str, valor, largo: int) -> bytes: # - FUNCIÓN AUXILIAR -
     """ Codifica un campo en UTF-8 y lo rellena con espacios hasta su largo """
