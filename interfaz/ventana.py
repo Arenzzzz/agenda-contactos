@@ -38,11 +38,11 @@ class VentanaPrincipal(QMainWindow):
         self.lateral = BarraLateral({
             "Contactos": [("➕   Nuevo contacto", self.nuevo_contacto),
                           ("🔄   Recargar lista", self.recargar)],
-            "Herramientas": [("📄   Exportar JSON", self.accion_exportar_json),
-                             ("🧾   Exportar PDF", self.accion_exportar_pdf),
+            "Exportar": [("📄   Exportar JSON", self.accion_exportar_json),
+                         ("🧾   Exportar PDF", self.accion_exportar_pdf)],
+            "Herramientas": [("🛡️   Verificar integridad", self.verificar_integridad),
                              ("🗜️   Respaldo ZIP", self.accion_respaldo),
-                             ("ℹ️   Info del archivo", self.accion_info_archivo),
-                             ("🛡️   Verificar integridad", self.verificar_integridad)],
+                             ("ℹ️   Info del archivo", self.accion_info_archivo)],
         })
         self.panel = PanelContactos()
         self.formulario = Formulario()
@@ -69,25 +69,24 @@ class VentanaPrincipal(QMainWindow):
         self.aplicar_tema(tema)
         self.nuevo_contacto()                   # arrancar con el formulario listo para agregar
 
-        # ================= Menú y barra de estado =================
+    # ================= Menú y barra de estado =================
     def _crear_menu(self, tema_inicial: str):
         menu = self.menuBar()
-
-        archivo = menu.addMenu("&Archivo")
-        self._accion(archivo, "Exportar a JSON…", self.accion_exportar_json)
-        self._accion(archivo, "Exportar reporte PDF…", self.accion_exportar_pdf)
-        archivo.addSeparator()
-        self._accion(archivo, "Crear respaldo ZIP", self.accion_respaldo)
-        archivo.addSeparator()
-        self._accion(archivo, "Salir", self.close, QKeySequence.Quit)
 
         contactos = menu.addMenu("&Contactos")
         self._accion(contactos, "Nuevo contacto", self.nuevo_contacto, QKeySequence.New)
         self._accion(contactos, "Buscar por ID", self.panel.enfocar_busqueda, QKeySequence.Find)
         self._accion(contactos, "Recargar lista", self.recargar, QKeySequence.Refresh)
+        contactos.addSeparator()
+        self._accion(contactos, "Salir", self.close, QKeySequence.Quit)
+
+        exportar = menu.addMenu("&Exportar")
+        self._accion(exportar, "Exportar a JSON", self.accion_exportar_json)
+        self._accion(exportar, "Generar reporte PDF", self.accion_exportar_pdf)
 
         herramientas = menu.addMenu("&Herramientas")
         self._accion(herramientas, "Verificar integridad (SHA-256)", self.verificar_integridad)
+        self._accion(herramientas, "Crear respaldo ZIP", self.accion_respaldo)
         self._accion(herramientas, "Información del archivo", self.accion_info_archivo)
 
         ver = menu.addMenu("&Ver")
