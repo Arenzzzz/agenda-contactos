@@ -23,7 +23,7 @@ def validar(c: Contacto) -> None:
         raise RegistroError(">> El ID debe ser un número entero positivo.")
     if not c.nombre.strip():
         raise RegistroError(">> El nombre es obligatorio.")
-    if not c.correo.strip() and "@" not in c.correo:
+    if c.correo.strip() and "@" not in c.correo:
         raise RegistroError(">> El correo no es válido.")
 
 def _campo_a_bytes(nombre: str, valor, largo: int) -> bytes: # - FUNCIÓN AUXILIAR -
