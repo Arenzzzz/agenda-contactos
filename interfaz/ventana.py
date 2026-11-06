@@ -14,6 +14,10 @@ from nucleo.config import TAM_REGISTRO
 from nucleo.integridad import verificar
 from nucleo.registro import RegistroError
 
+from PySide6.QtCore import QUrl
+from PySide6.QtGui import QDesktopServices
+
+from herramientas.exportar import exportar_json, exportar_pdf
 
 class VentanaPrincipal(QMainWindow):
     """ Es el único componente que habla con la Agenda (los archivos) """
@@ -32,8 +36,8 @@ class VentanaPrincipal(QMainWindow):
         self.lateral = BarraLateral({
             "Contactos": [("➕   Nuevo contacto", self.nuevo_contacto),
                           ("🔄   Recargar lista", self.recargar)],
-            "Herramientas": [("📄   Exportar JSON", self.pendiente),
-                             ("🧾   Exportar PDF", self.pendiente),
+            "Herramientas": [("📄   Exportar JSON", self.accion_exportar_json),
+                             ("🧾   Exportar PDF", self.accion_exportar_pdf),
                              ("🗜️   Respaldo ZIP", self.pendiente),
                              ("ℹ️   Info del archivo", self.pendiente),
                              ("🛡️   Verificar integridad", self.verificar_integridad)],
@@ -68,8 +72,8 @@ class VentanaPrincipal(QMainWindow):
         menu = self.menuBar()
 
         archivo = menu.addMenu("&Archivo")
-        self._accion(archivo, "Exportar a JSON…", self.pendiente)
-        self._accion(archivo, "Exportar reporte PDF…", self.pendiente)
+        self._accion(archivo, "Exportar a JSON…", self.accion_exportar_json)
+        self._accion(archivo, "Exportar reporte PDF…", self.accion_exportar_pdf)
         archivo.addSeparator()
         self._accion(archivo, "Crear respaldo ZIP", self.pendiente)
         archivo.addSeparator()
@@ -193,6 +197,27 @@ class VentanaPrincipal(QMainWindow):
         self.actualizar_integridad()
         self.statusBar().showMessage(mensaje, 4000)    # mensaje temporal de 4 segundos
 
+        # ================= Herramientas =================
+    def accion_exportar_json(self):
+        try:
+            ruta = exportar_json(self.agenda)
+        except (OSError, RegistroError) as e:
+            QMessageBox.critical(self, "No se pudo exportar", str(e))
+            return
+        total = self.agenda.archivo.cantidad_registros()
+        QMessageBox.information(self, "JSON exportado",
+                                f"Se exportaron {total} contactos a:\n{ruta}")
+
+    def accion_exportar_pdf(self):
+        try:
+            ruta_json = exportar_json(self.agenda)     # JSON al día antes del reporte
+            ruta_pdf = exportar_pdf(ruta_json)
+        except (OSError, RegistroError) as e:
+            QMessageBox.critical(self, "No se pudo generar el PDF", str(e))
+            return
+        self.statusBar().showMessage(f"Reporte generado: {ruta_pdf}", 5000)
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(ruta_pdf)))   # abrir el PDF
+
         # ================= Integridad =================
     def avisos_iniciales(self):
         """Se llama justo después de abrir la ventana."""
@@ -224,7 +249,7 @@ class VentanaPrincipal(QMainWindow):
     # ================= Apariencia y otros =================
     def aplicar_tema(self, nombre: str):
         """ Cambia colores y tipografías de toda la app en caliente """
-        
+
         self.tema = TEMAS[nombre]
         QApplication.instance().setStyleSheet(construir_qss(self.tema))
         self.panel.set_tema(self.tema)
