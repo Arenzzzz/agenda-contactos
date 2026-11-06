@@ -85,5 +85,3 @@ class ArchivoContactos:
             for n in range(total):
                 datos = f.read(TAM_REGISTRO)    # el puntero avanza 128 bytes solo
                 yield n, desempaquetar(datos)
-
-                
