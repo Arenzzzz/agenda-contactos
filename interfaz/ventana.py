@@ -18,6 +18,7 @@ from PySide6.QtCore import QUrl
 from PySide6.QtGui import QDesktopServices
 
 from herramientas.exportar import exportar_json, exportar_pdf
+from herramientas.respaldo import crear_respaldo
 
 class VentanaPrincipal(QMainWindow):
     """ Es el único componente que habla con la Agenda (los archivos) """
@@ -38,7 +39,7 @@ class VentanaPrincipal(QMainWindow):
                           ("🔄   Recargar lista", self.recargar)],
             "Herramientas": [("📄   Exportar JSON", self.accion_exportar_json),
                              ("🧾   Exportar PDF", self.accion_exportar_pdf),
-                             ("🗜️   Respaldo ZIP", self.pendiente),
+                             ("🗜️   Respaldo ZIP", self.accion_respaldo),
                              ("ℹ️   Info del archivo", self.pendiente),
                              ("🛡️   Verificar integridad", self.verificar_integridad)],
         })
@@ -75,7 +76,7 @@ class VentanaPrincipal(QMainWindow):
         self._accion(archivo, "Exportar a JSON…", self.accion_exportar_json)
         self._accion(archivo, "Exportar reporte PDF…", self.accion_exportar_pdf)
         archivo.addSeparator()
-        self._accion(archivo, "Crear respaldo ZIP", self.pendiente)
+        self._accion(archivo, "Crear respaldo ZIP", self.accion_respaldo)
         archivo.addSeparator()
         self._accion(archivo, "Salir", self.close, QKeySequence.Quit)
 
@@ -217,6 +218,30 @@ class VentanaPrincipal(QMainWindow):
             return
         self.statusBar().showMessage(f"Reporte generado: {ruta_pdf}", 5000)
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(ruta_pdf)))   # abrir el PDF
+
+    def accion_respaldo(self):
+        try:
+            r = crear_respaldo()
+        except OSError as e:                       # incluye FileNotFoundError
+            QMessageBox.critical(self, "No se pudo crear el respaldo", str(e))
+            return
+
+        filas = "".join(
+            f"<tr><td>{nombre}</td><td align='right'>{orig:,} B</td>"
+            f"<td align='right'>{comp:,} B</td></tr>"
+            for nombre, orig, comp in r["detalle"])
+        estado = ("✔ Verificado: el ZIP se lee completo (CRC correcto)" if r["valido"]
+                  else "✖ El ZIP no pasó la verificación")
+        QMessageBox.information(
+            self, "Respaldo creado",
+            f"<b>{r['ruta'].name}</b><br><br>"
+            "<table cellpadding='4'>"
+            "<tr><th align='left'>Archivo</th><th>Original</th><th>Comprimido</th></tr>"
+            f"{filas}"
+            f"<tr><td><b>ZIP completo</b></td><td align='right'><b>{r['original']:,} B</b></td>"
+            f"<td align='right'><b>{r['comprimido']:,} B</b></td></tr>"
+            "</table><br>"
+            f"Ahorro: <b>{r['ahorro']:.1f}%</b><br>{estado}")
 
         # ================= Integridad =================
     def avisos_iniciales(self):
